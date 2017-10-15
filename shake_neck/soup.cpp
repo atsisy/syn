@@ -6,6 +6,7 @@
 #include <opencv2/tracking/tldDataset.hpp>
 #include <opencv2/imgproc.hpp>
 #include <iostream>
+#include "character.hpp"
 
 int tracker_init(cv::Ptr<cv::TrackerKCF> &tracker, cv::Rect2d &rect)
 {
@@ -80,9 +81,12 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	Character satori(cv::imread("C:\\Users\\Akihiro\\Pictures\\syn_satori_face.png"), cv::imread("C:\\Users\\Akihiro\\Pictures\\syn_satori_body.png"));
+	const cv::Point char_body_point(satori.recm_body_point(mirror_point(get_center(roi), 320)));
+	
 	while (cv::waitKey(1) != 'q')
 	{
-		cv::Mat front(cv::Size(640, 480), CV_8UC3, cv::Scalar(0, 0, 0));
+		cv::Mat front(cv::Size(640, 680), CV_8UC3, cv::Scalar(255, 255, 255));
 		cap >> frame;
 		if (frame.empty())
 		{
@@ -92,7 +96,8 @@ int main(int argc, char* argv[])
 		//更新
 		tracker->update(frame, roi);
 
-		cv::circle(front, mirror_point(get_center(roi), 320), 3, cv::Scalar(0, 255, 255));
+		//cv::circle(front, mirror_point(get_center(roi), 320), 3, cv::Scalar(0, 255, 255));
+		satori.draw(front, mirror_point(get_center(roi), 320), char_body_point);
 
 		cv::imshow("syn - SHAKE YOUR NECK!!", front);
 
