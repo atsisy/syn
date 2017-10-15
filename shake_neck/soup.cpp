@@ -48,6 +48,16 @@ int tracker_init(cv::Ptr<cv::TrackerKCF> &tracker, cv::Rect2d &rect)
 	return -1;
 }
 
+cv::Point get_center(const cv::Rect2d &rect)
+{
+	return cv::Point(rect.tl().x + ((rect.br().x - rect.tl().x) / 2), rect.tl().y + ((rect.br().y - rect.tl().y) / 2));
+}
+
+cv::Point mirror_point(const cv::Point &p, int center)
+{
+	return cv::Point((center << 1) - p.x, p.y);
+}
+
 int main(int argc, char* argv[])
 {
 	cv::Ptr<cv::TrackerKCF> tracker = cv::TrackerKCF::create();
@@ -72,6 +82,7 @@ int main(int argc, char* argv[])
 
 	while (cv::waitKey(1) != 'q')
 	{
+		cv::Mat front(cv::Size(640, 480), CV_8UC3, cv::Scalar(0, 0, 0));
 		cap >> frame;
 		if (frame.empty())
 		{
@@ -81,10 +92,9 @@ int main(int argc, char* argv[])
 		//更新
 		tracker->update(frame, roi);
 
-		//矩形で囲む
-		cv::rectangle(frame, roi, color, 1, 1);
+		cv::circle(front, mirror_point(get_center(roi), 320), 3, cv::Scalar(0, 255, 255));
 
-		cv::imshow("tracker", frame);
+		cv::imshow("syn - SHAKE YOUR NECK!!", front);
 
 	}
 
