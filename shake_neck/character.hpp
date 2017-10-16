@@ -13,6 +13,9 @@ private:
 public:
 	Character(cv::Mat &face, cv::Mat &body);
 	void draw(cv::Mat &background, const cv::Point &face_point, const cv::Point &body_point);
+	void draw_face(cv::Mat &background, const cv::Point &face_point);
+	void draw_body(cv::Mat &background, const cv::Point &body_point);
 	cv::Point recm_body_point(cv::Point face_point);
+
 
 };

@@ -14,7 +14,7 @@ int tracker_init(cv::Ptr<cv::TrackerKCF> &tracker, cv::Rect2d &rect)
 	if (!cap.isOpened())
 	{
 		std::cout << "CAN'T OPEN CAMERA." << std::endl;
-		return -1;
+		return -1; 
 	}
 
 	cv::Mat frame;
@@ -84,9 +84,13 @@ int main(int argc, char* argv[])
 	Character satori(cv::imread("C:\\Users\\Akihiro\\Pictures\\syn_satori_face.png"), cv::imread("C:\\Users\\Akihiro\\Pictures\\syn_satori_body.png"));
 	const cv::Point char_body_point(satori.recm_body_point(mirror_point(get_center(roi), 320)));
 	
+	cv::Mat default_front(cv::Size(640, 680), CV_8UC3, cv::Scalar(255, 255, 255));
+	satori.draw_body(default_front, char_body_point);
+
+
 	while (cv::waitKey(1) != 'q')
 	{
-		cv::Mat front(cv::Size(640, 680), CV_8UC3, cv::Scalar(255, 255, 255));
+		cv::Mat front = default_front.clone();
 		cap >> frame;
 		if (frame.empty())
 		{
@@ -97,7 +101,7 @@ int main(int argc, char* argv[])
 		tracker->update(frame, roi);
 
 		//cv::circle(front, mirror_point(get_center(roi), 320), 3, cv::Scalar(0, 255, 255));
-		satori.draw(front, mirror_point(get_center(roi), 320), char_body_point);
+		satori.draw_face(front, mirror_point(get_center(roi), 320));
 
 		cv::imshow("syn - SHAKE YOUR NECK!!", front);
 

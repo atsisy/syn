@@ -35,3 +35,13 @@ cv::Point Character::recm_body_point(cv::Point face_point)
 {
 	return cv::Point(face_point.x, face_point.y + (face.rows / 2) + (body.rows / 2));
 }
+
+void Character::draw_face(cv::Mat &background, const cv::Point &face_point)
+{
+	paste(background, face, face_point.x - (face.cols / 2), face_point.y - (face.rows / 2), face.cols, face.rows);
+}
+
+void Character::draw_body(cv::Mat &background, const cv::Point &body_point)
+{
+	paste(background, body, body_point.x - (face.cols / 2), body_point.y - (face.rows / 2), face.cols, face.rows);
+}
